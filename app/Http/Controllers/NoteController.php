@@ -169,5 +169,26 @@ class NoteController extends Controller
             'notes' => $notes,
         ], Response::HTTP_OK);
     }
+
+    public function filterByCategory(Request $request)
+    {
+        $categoryId = $request->query('category_id');
+
+        $notes = DB::table('notes')
+            ->join('note_category', 'notes.id', '=', 'note_category.note_id')
+            ->whereNull('notes.deleted_at')
+            ->where('notes.status', 'published')
+            ->where('note_category.category_id', $categoryId)
+            ->select('notes.*')
+            ->orderBy('notes.updated_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        return response()->json([
+            'category_id' => $categoryId,
+            'count' => $notes->count(),
+            'notes' => $notes,
+        ], Response::HTTP_OK);
+    }
 }
 
