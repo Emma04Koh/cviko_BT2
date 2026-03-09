@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -41,6 +40,56 @@ class NoteSeeder extends Seeder
                 'title' => 'Project Idea',
                 'body' => 'Nápad na nový startup...',
                 'status' => 'archived',
+                'is_pinned' => false,
+                'created_at' => $now,
+                'updated_at' => $now,
+                'deleted_at' => null,
+            ],
+            [
+                'user_id' => 1,
+                'title' => 'Laravel Projekt',
+                'body' => 'Dokončiť zadanie na cviko',
+                'status' => 'published',
+                'is_pinned' => false,
+                'created_at' => $now,
+                'updated_at' => $now,
+                'deleted_at' => null,
+            ],
+            [
+                'user_id' => 3,
+                'title' => 'Potraviny',
+                'body' => 'Kúpiť chlieb a ovocie',
+                'status' => 'draft',
+                'is_pinned' => false,
+                'created_at' => $now,
+                'updated_at' => $now,
+                'deleted_at' => null,
+            ],
+            [
+                'user_id' => 4,
+                'title' => 'Tréning',
+                'body' => 'Dnes nohy a kardio',
+                'status' => 'published',
+                'is_pinned' => false,
+                'created_at' => $now,
+                'updated_at' => $now,
+                'deleted_at' => null,
+            ],
+            [
+                'user_id' => 1,
+                'title' => 'Film',
+                'body' => 'Pozrieť si nový seriál',
+                'status' => 'draft',
+                'is_pinned' => false,
+                'created_at' => $now,
+                'updated_at' => $now,
+                'deleted_at' => null,
+            ],
+            [
+                'user_id' => 5,
+                'title' => 'Práca',
+                'body' => 'Poslať report šéfovi',
+                'status' => 'published',
                 'is_pinned' => false,
                 'created_at' => $now,
                 'updated_at' => $now,

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -20,6 +19,11 @@ class CategorySeeder extends Seeder
             ['name' => 'Osobné', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Nápady', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'TODO', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Dôležité', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Nákupy', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Cvičenie', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Zábava', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Ostatné', 'created_at' => $now, 'updated_at' => $now],
         ]);
     }
 }
