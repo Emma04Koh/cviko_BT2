@@ -31,7 +31,6 @@ class CategoryController extends Controller
     {
         $id = DB::table('categories')->insertGetId([
             'name' => $request->name,
-            'description' => $request->description,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -66,7 +65,6 @@ class CategoryController extends Controller
     {
         DB::table('categories')->where('id', $id)->update([
             'name' => $request->name,
-            'description' => $request->description,
             'updated_at' => now(),
         ]);
 
