@@ -56,10 +56,6 @@ class Note extends Model
             ->get();
     }
 
-    public function categories() {
-        return $this->belongsToMany(Category::class, "note_category");
-    }
-
     public function togglePin(): bool
     {
         $this->is_pinned = !$this->is_pinned;

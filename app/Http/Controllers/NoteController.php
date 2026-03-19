@@ -189,5 +189,4 @@ class NoteController extends Controller
         $pinned = Note::where('is_pinned', true)->get();
         return response()->json(['notes' => $pinned]);
     }
-
 }
