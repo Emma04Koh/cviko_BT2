@@ -18,9 +18,22 @@ use Illuminate\Support\Facades\Route;
 
 //Route::apiResource('notes', NoteController::class);
 
-Route::prefix('notes')->group(function () {
-    Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('notes', NoteController::class);
+//Route::prefix('notes')->group(function () {
+    //Route::apiResource('categories', CategoryController::class);
+    //Route::apiResource('notes', NoteController::class);
 
-    Route::get('actions/filter', [NoteController::class, 'filterByCategory']);
+    //Route::get('actions/filter', [NoteController::class, 'filterByCategory']);
+//});
+
+Route::prefix('notes')->group(function () {
+    // CRUD
+    Route::apiResource('items', NoteController::class);
+    Route::apiResource('categories', CategoryController::class);
+
+    Route::get('pinned', [NoteController::class, 'pinnedNotes']);
+    Route::get('search', [NoteController::class, 'search']);
+
+    Route::post('items/{id}/publish', [NoteController::class, 'publish']);
+    Route::post('items/{id}/archive', [NoteController::class, 'archive']);
+    Route::post('items/{id}/pin', [NoteController::class, 'togglePin']);
 });
