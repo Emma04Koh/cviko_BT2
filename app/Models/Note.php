@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -14,8 +18,6 @@ class Note extends Model
     protected $table = 'notes';
 
     protected $primaryKey = 'id';
-
-    //public $timestamps = false;
 
     protected $fillable = [
         'user_id',
@@ -29,6 +31,16 @@ class Note extends Model
         'is_pinned' => 'boolean',
     ];
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // ďalšie relácie
+
+
+    // vlastné metódy modelu
+
     public function publish(): bool
     {
         $this->status = 'published';
@@ -38,6 +50,18 @@ class Note extends Model
     public function archive(): bool
     {
         $this->status = 'archived';
+        return $this->save();
+    }
+
+    public function pin(): bool
+    {
+        $this->is_pinned = true;
+        return $this->save();
+    }
+
+    public function unpin(): bool
+    {
+        $this->is_pinned = false;
         return $this->save();
     }
 
@@ -56,10 +80,18 @@ class Note extends Model
             ->get();
     }
 
-    public function togglePin(): bool
+    public function categories(): BelongsToMany
     {
-        $this->is_pinned = !$this->is_pinned;
-        return $this->save();
+        return $this->belongsToMany(Category::class, 'note_category')->withTimestamps();
     }
 
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }
