@@ -69,17 +69,22 @@ class NoteController extends Controller
      * Display the specified resource.
      */
 
-    public function show(string $id)
+    public function show($item)
     {
-        $note = Note::find($id);
+        $note = \App\Models\Note::with([
+            'user',
+            'categories',
+            'tasks.comments',
+            'comments'
+        ])->find($item);
 
         if (!$note) {
-            return response()->json(['message' => 'Poznámka nenájdená.'], Response::HTTP_NOT_FOUND);
+            return response()->json([
+                'error' => 'Note not found'
+            ], 404);
         }
-
-        return response()->json(['note' => $note], Response::HTTP_OK);
+        return response()->json($note);
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -234,5 +239,44 @@ class NoteController extends Controller
     {
         $pinned = Note::where('is_pinned', true)->get();
         return response()->json(['notes' => $pinned]);
+    }
+
+    public function addCategory(Request $request, $id)
+    {
+        $note = Note::find($id);
+
+        if (!$note) {
+            return response()->json(['error' => 'Note not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id'
+        ]);
+
+        $note->categories()->syncWithoutDetaching([$validated['category_id']]);
+
+        return response()->json([
+            'message' => 'Category added to note successfully',
+            'note' => $note->load('categories')
+        ], 200);
+    }
+    public function removeCategory(Request $request, $id)
+    {
+        $note = Note::find($id);
+
+        if (!$note) {
+            return response()->json(['error' => 'Note not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id'
+        ]);
+
+        $note->categories()->detach($validated['category_id']);
+
+        return response()->json([
+            'message' => 'Category removed from note successfully',
+            'note' => $note->load('categories')
+        ], 200);
     }
 }

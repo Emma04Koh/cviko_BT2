@@ -13,9 +13,6 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //$categories = DB::table('categories')->get();
-        //return response()->json($categories);
-
         return response()->json(Category::all());
     }
 
@@ -32,18 +29,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        /*$id = DB::table('categories')->insertGetId([
-            'name' => $request->name,
-            'created_at' => now(),
-            'updated_at' => now(),
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name',
+            'color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
 
-        return response()->json(['id' => $id, 'message' => 'Vytvorené'], 201);*/
-
-        $category = Category::create([
-            'name' => $request->name,
-            'color' => $request->color ?? '#fffffe',
-        ]);
+        $category = Category::create($validated);
 
         return response()->json($category, 201);
     }
@@ -53,14 +44,10 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        /*$category = DB::table('categories')->where('id', $id)->first();
-        if (!$category) {
-            return response()->json(['message' => 'Nenájdené'], 404);
-        }
-        return response()->json($category);*/
-
         $category = Category::find($id);
-        if (!$category) return response()->json(['message' => 'Nenájdené'], 404);
+        if (!$category){
+            return response()->json(['error' => 'Category not found'], 404);
+        }
         return response()->json($category);
     }
 
@@ -75,18 +62,22 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        /*DB::table('categories')->where('id', $id)->update([
-            'name' => $request->name,
-            'updated_at' => now(),
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name' . $category->id,
+            'color' => ['sometimes', 'required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
 
-        return response()->json(['message' => 'Upravené']);*/
+        $category->update($validated);
 
-        $category = Category::findOrFail($id);
-        $category->update($request->only(['name', 'color']));
-        return response()->json($category);
+        return response()->json($category, 200);
     }
 
     /**
@@ -94,10 +85,14 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        /*DB::table('categories')->where('id', $id)->delete();
-        return response()->json(['message' => 'Zmazané']);*/
+        $category = Category::find($id);
 
-        Category::destroy($id);
-        return response()->json(['message' => 'Zmazané']);
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        $category->delete();
+
+        return response()->json(['message' => 'Category deleted successfully']);
     }
 }

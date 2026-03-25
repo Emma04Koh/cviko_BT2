@@ -36,4 +36,7 @@ Route::prefix('notes')->group(function () {
     Route::post('items/{id}/publish', [NoteController::class, 'publish']);
     Route::post('items/{id}/archive', [NoteController::class, 'archive']);
     Route::post('items/{id}/pin', [NoteController::class, 'togglePin']);
+
+    Route::post('{id}/categories', [NoteController::class, 'addCategory']);
+    Route::delete('{id}/categories', [NoteController::class, 'removeCategory']);
 });
