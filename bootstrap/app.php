@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withMiddleware(function ($middleware) {
+        $middleware->alias([
+            'admin' => AdminOnly::class,
+        ]);
+    })
+
     ->withMiddleware(function (Middleware $middleware): void {
         //
     })
