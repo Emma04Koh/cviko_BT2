@@ -41,17 +41,17 @@ class TaskPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Note $note): bool
+    public function update(User $user, Task $task): bool
     {
-        // DOPLNIŤ...
+        return $user->id === $task->note->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Note $note): bool
+    public function delete(User $user, Task $task): bool
     {
-        // DOPLNIŤ...
+        return $user->id === $task->note->user_id;
     }
 
     /**

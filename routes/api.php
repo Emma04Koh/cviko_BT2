@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,21 +18,6 @@ Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
     });
 });
-
-// zvyšné endpointy zostanú zatiaľ bez zmeny...
-Route::apiResource('notes', NoteController::class);
-
-// vy ich tam máte viac... nemažte si ich...
-Route::middleware('auth:sanctum')->group(function () {
-    // všetci prihlásení môžu čítať kategórie
-    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
-
-    // iba admin môže vytvárať, upravovať, mazať kategórie
-    Route::middleware('admin')->group(function () {
-        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
-    });
-});
-
 
 Route::middleware('auth:sanctum')->post('/logout-all', [AuthController::class, 'logoutAll']);
 
@@ -52,9 +41,29 @@ Route::middleware('auth:sanctum')->group(function () {
     // vy máte možno iné routy, nekopírujte naslepo...
     Route::patch('/notes/{note}/publish', [NoteController::class, 'publish']);
     Route::patch('/notes/{note}/archive', [NoteController::class, 'archive']);
-    Route::patch('/notes/{note}/pin', [NoteController::class, 'pin']);
-    Route::patch('/notes/{note}/unpin', [NoteController::class, 'unpin']);
 
-    // tasks
+    // komentáre k note
+    Route::get('/notes/{note}/comments', [CommentController::class, 'indexForNote']);
+    Route::post('/notes/{note}/comments', [CommentController::class, 'storeForNote']);
+
+    // komentáre k tasku
+    Route::get('/tasks/{task}/comments', [CommentController::class, 'indexForTask']);
+    Route::post('/tasks/{task}/comments', [CommentController::class, 'storeForTask']);
+
+    // update + delete (spoločné)
+    Route::patch('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
+    // TASKS
     Route::apiResource('notes.tasks', TaskController::class)->scoped();
+});
+
+Route::middleware(['auth:sanctum', 'premium'])->group(function () {
+    Route::get('/notes/{note}/attachments', [AttachmentController::class, 'index']);
+    Route::post('/notes/{note}/attachments', [AttachmentController::class, 'store']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/attachments/{attachment}/link', [AttachmentController::class, 'link']);
+    Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy']);
 });

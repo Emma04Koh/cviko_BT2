@@ -24,9 +24,9 @@ class Task extends Model
         'due_at' => 'datetime',
     ];
 
-    public function notes(): BelongsToMany
+    public function note(): BelongsTo
     {
-        return $this->belongsToMany(Note::class, 'notes')->withTimestamps();
+        return $this->belongsTo(Note::class);
     }
 
     public function comments(): MorphMany
