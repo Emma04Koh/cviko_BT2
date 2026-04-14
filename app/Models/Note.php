@@ -36,11 +36,6 @@ class Note extends Model
         return $this->belongsTo(User::class);
     }
 
-    // ďalšie relácie
-
-
-    // vlastné metódy modelu
-
     public function publish(): bool
     {
         $this->status = 'published';
@@ -56,12 +51,6 @@ class Note extends Model
     public function pin(): bool
     {
         $this->is_pinned = true;
-        return $this->save();
-    }
-
-    public function unpin(): bool
-    {
-        $this->is_pinned = false;
         return $this->save();
     }
 
@@ -93,5 +82,11 @@ class Note extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(Attachment::class, 'attachable')
+            ->where('collection', 'attachment');
     }
 }

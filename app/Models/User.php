@@ -41,9 +41,10 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function hasActivePremium(): bool
+    public function profilePhoto(): MorphOne
     {
-        return $this->premium_until !== null && $this->premium_until->isFuture();
+        return $this->morphOne(Attachment::class, 'attachable')
+            ->where('collection', 'profile_photo');
     }
 
 }
