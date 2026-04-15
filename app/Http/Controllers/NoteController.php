@@ -6,6 +6,7 @@ use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class NoteController extends Controller
@@ -64,10 +65,15 @@ class NoteController extends Controller
                 $path = $file->store('notes/' . $note->id, 'public');
 
                 $note->attachments()->create([
-                    'path' => $path,
-                    'name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
-                    'size' => $file->getSize(),
+                    'public_id'     => (string) Str::ulid(),
+                    'collection'    => 'attachment',
+                    'visibility'    => 'private',
+                    'disk'          => 'public',
+                    'path'          => $path,
+                    'original_name' => $file->getClientOriginalName(),
+                    'stored_name'   => basename($path),
+                    'mime_type'     => $file->getMimeType(),
+                    'size'          => $file->getSize(),
                 ]);
             }
 
