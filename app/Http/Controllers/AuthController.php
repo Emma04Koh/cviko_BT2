@@ -33,6 +33,8 @@ class AuthController extends Controller
             'role'       => 'user',
         ]);
 
+        event(new Registered($user));
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
@@ -41,7 +43,6 @@ class AuthController extends Controller
             'token' => $token,
         ], Response::HTTP_CREATED);
     }
-
     public function login(Request $request)
     {
         $validated = $request->validate([
@@ -226,4 +227,6 @@ class AuthController extends Controller
             'message' => 'Profilová fotka bola odstránená.',
         ], Response::HTTP_OK);
     }
+
+
 }
